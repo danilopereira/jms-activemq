@@ -6,7 +6,12 @@
 
     <groupId>com.danilopereira</groupId>
     <artifactId>jms-activemq</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>jms-activemq-consumer</module>
+        <module>jms-activemq-producer</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,12 +47,6 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
             <version>${activemq.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -1,5 +1,8 @@
 package com.danilopereira.consumer;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -9,22 +12,25 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+@Slf4j
 public class ConsumerImpl implements Consumer {
 
-    private final static String NO_GREETING = "no greeting";
     private int timeout;
     private Connection connection;
     private MessageConsumer messageConsumer;
+    private ConnectionFactory connectionFactory;
 
-
-    @Override
-    public void create(ConnectionFactory connectionFactory, String destinationName) throws JMSException {
+    public ConsumerImpl(ConnectionFactory connectionFactory, int timeout, String destinationName) throws JMSException {
+        this.connectionFactory = connectionFactory;
+        this.connection = connectionFactory.createConnection();
+        this.timeout = timeout;
         connection = connectionFactory.createConnection();
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Destination destination = session.createQueue(destinationName);
         messageConsumer = session.createConsumer(destination);
         connection.start();
     }
+
 
     @Override
     public void close() throws JMSException {
@@ -33,14 +39,13 @@ public class ConsumerImpl implements Consumer {
 
     @Override
     public String getGreeting() throws JMSException {
-        String greeting = NO_GREETING;
+        String greeting = null;
         Message message = messageConsumer.receive(timeout);
 
         if(message != null){
             TextMessage textMessage = (TextMessage) message;
             greeting = "Hello " + textMessage.getText() + "!";
         }
-
         return greeting;
     }
 }

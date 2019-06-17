@@ -15,11 +15,10 @@ public class ProducerImpl implements Producer {
     private Connection connection;
     private Session session;
     private MessageProducer messageProducer;
+    private ConnectionFactory connectionFactory;
 
-
-    @Override
-    public void create(ConnectionFactory connectionFactory, String destinationName) throws JMSException {
-//        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_BROKER_URL);
+    public ProducerImpl(ConnectionFactory connectionFactory, String destinationName) throws JMSException {
+        this.connectionFactory = connectionFactory;
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Destination destination = session.createQueue(destinationName);
@@ -36,6 +35,7 @@ public class ProducerImpl implements Producer {
         String text = firstName + " " + lastName;
         TextMessage textMessage = session.createTextMessage(text);
         messageProducer.send(textMessage);
+        log.info("message sent to queue: {}", text);
 
 
     }
